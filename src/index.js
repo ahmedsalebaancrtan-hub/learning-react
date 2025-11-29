@@ -74,39 +74,37 @@ import { useEffect, useState } from 'react';
 
 //     )
 // }
- const api = "https://jsonplaceholder.typicode.com/posts/1" 
+ const api = "https://jsonplaceholder.typicode.com/posts";
 
- const App = () => {
+const App = () => {
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    const [ post , setpost] = useState(null)
+  useEffect(() => {
+    const getPosts = async () => {
+      setLoading(true);
+      const response = await fetch(api);
+      const data = await response.json();
+      setPosts(data); // <--- data is an ARRAY
+      setLoading(false);
+    };
+    getPosts();
+  }, []);
 
-    useEffect(()=>{
+  if (loading) return <h1>LOADING.....</h1>;
 
-        // fetch(api)
-        // .then(response => response.json())
-        // .then(data => setpost(data))
-
-        const getpost  = async ()=>{
-               const response = await fetch(api)
-        const data = await response.json()
-        setpost(data)
-
-        }
-     getpost()
-
-    } , [])
-
-    return (
-        <>
-
-        <h1> { post?.title}</h1>
-        <p>{post?.body}</p>
-        </>
-    )
-
-
-
- }
+  return (
+    <>
+      {posts.map((post) => (
+        <div key={post.id} style={{ marginBottom: "20px" }}>
+          <h1>{post.title}</h1>
+          <p>{post.body}</p>
+          <hr />
+        </div>
+      ))}
+    </>
+  );
+};
 
 
 const container = document.getElementById("root");
